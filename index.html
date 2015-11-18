@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+
+	<title>LuxSoftware - Let's Keep It Simple&trade;</title>
+	<meta name="description" content="The official LuxSoftware website.">
+	<meta name="author" content="Oliver Yasuna">
+
+	<link rel="stylesheet" href="css/style.css?v=1">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body class="unselectable">
+	<div id="content">
+		
+		<!-- <header></header> -->
+		<object class="header" type="application/x-shockwave-flash" width="500px" height="100px" data="img/logo (1).swf"">
+			<param name="allowScriptAccess" value="never" />
+			<param name="allowNetworking" value="internal" />
+			<param name="scale" value="nosize" />
+			<param name="quality" value="high" />
+			<param name="wmode" value="transparent" />
+			<param name="menu" value="false" />
+		</object>
+		
+		<div id="sidebar">
+			<nav>
+				<a href="#home">Home</a>
+				<a href="#about">About Us</a>
+				<a href="#community">Community</a>
+				<a href="#products">Products</a>
+				<a href="#educational">Educational</a>
+				<a href="#contact">Contact Us</a>
+			</nav>
+		</div>
+		
+		<div id="container"><b style="color: red;">ERROR! Page not updated</b></div>
+		
+	</div>
+
+	<script type="text/javascript">
+
+		$(document).ready(function() {
+			
+			function getNewPage(page, _callback)
+			{
+				/*$.get(page, function(data)
+				{
+					_callback(data);
+				});*/
+				$.ajax({
+					url: page,
+					type: 'GET',
+					success: function(data) { _callback(data); },
+					error: function() {
+						alert("ERROR!\nPage not found");
+					}
+				});
+			}
+			
+			function load(justLoaded, page)
+			{
+				if(page == null) return;
+				
+				var oldData;
+				
+				getNewPage(page + ".html", function(data)
+				{
+					if(data == null) return;
+					
+					window.location.href = '#' + page;
+					
+					oldData = $("#container").html();
+					
+					//var oldHeight; 
+					var newHeight;
+					
+					if(justLoaded)
+					{
+						$("#container").html(data);
+					} else {
+						//oldHeight = $("#page").height();
+						$("#container").html(data);
+						newHeight = $("#page").height();
+						$("#container").html(oldData);
+						
+						$("#container").animate(
+						{
+							height: newHeight
+						}, 400);
+						$("#page").fadeOut(300, function()
+						{
+							$("#container").html(data);
+							
+							$("#page").fadeOut(0, function()
+							{
+								$("#page").fadeIn(300);
+							});
+						});
+					}
+					
+					$("a").each(function(index, item)
+					{
+						if(this.parentElement.tagName == "NAV")
+						{
+							$(item).html($(item).text());
+
+							if($(item).attr("href") == "#" + page)
+							{
+								$(item).html("<b>" + $(item).text() + "</b>");
+							}
+						}
+					});
+				});
+			}
+			
+			if(window.location.hash == "")
+			{
+				load(true, "home");
+			} else {
+				var target = window.location.hash.substring(1);
+				
+				load(true, target);
+			}
+			
+			function contact(form)
+			{
+				var children = form.children();
+
+				var firstName;
+				var lastName;
+				var email_;
+				var type_;
+				var title_;
+				var message_;
+
+				for(var i = 0; i < children.length; i++)
+				{
+					if(children[i].name == null || children[i].name == "") continue;
+
+					var child = children[i];
+
+					if(child.name == "first-name")
+					{
+						firstName = $(child).val();
+					} else if(child.name == "last-name") {
+						lastName = $(child).val();
+					} else if(child.name == "email") {
+						email_ = $(child).val();
+					} else if(child.name == "type") {
+						type_ = $(child).val();
+					} else if(child.name == "title") {
+						title_ = $(child).val();
+					} else if(child.name == "message") {
+						message_ = $(child).val();
+					}
+				}
+				
+				if(firstName == "")
+				{
+					return;
+				}
+				if(lastName == "")
+				{
+					return;
+				}
+				if(email_ == "")
+				{
+					return;
+				}
+				if(title_ == "")
+				{
+					return;
+				}
+				if(message_ == "")
+				{
+					return;
+				}
+				
+				//var data = "firstname=" + firstName + "&lastname=" + lastName + "&email=" + email + "&type=" + type + "&title=" + title + "&message=" + message;
+				
+				var data0 = {
+					firstname: firstName,
+					lastname: lastName,
+					email: email_,
+					type: type_,
+					title: title_,
+					message: message_
+				};
+				
+				//window.location.href = 'contact.php?' + data;
+				$.post("contact.php", data0, function(data, status, xhr)
+				{
+					load(false, "contactdone");
+				});
+			}
+			
+			$(document).on("click", "a", function(e)
+			{
+				var class_ = $(event.target).attr("class");
+				var href = $(event.target).attr("href");
+				
+				if(class_ == "submit")
+				{
+					var form = $(event.target.parentElement);
+					var action = form.attr("action");
+					
+					if(action == "contact.php")
+					{
+						contact(form);
+					}
+				} else {
+					var target = href.substring(1);
+					
+					load(false, target);
+				}
+				
+				e.preventDefault();
+			});
+
+		});
+
+	</script>
+</body>
+</html>

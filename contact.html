@@ -1,0 +1,36 @@
+<style>
+#content {
+	position: fixed;
+	padding-right: 16px;
+}
+</style>
+
+<div id="page">
+	<p style="margin-top: 0;">
+		<b>All fields are required.</b>
+	</p>
+	<p>
+		<span class="form" action="contact.php">
+			<label>First Name</label>
+			<input type="text" name="first-name">
+			<label>Last Name</label>
+			<input type="text" name="last-name">
+			<label>Email</label>
+			<input type="text" name="email" size="30">
+			<br>
+			<label>Type</label>
+			<select name="type">
+				<option value="Question">Question</option>
+				<option value="Feedback">Feedback</option>
+				<option value="Bug Report">Bug Report</option>
+			</select>
+			<br>
+			<label>Message Title</label>
+			<input type="text" name="title" size="55">
+			<label>Message</label>
+			<textarea name="message" rows="7" cols="57"></textarea>
+			<br>
+			<a class="submit">Submit</a>
+		</span>
+	</p>
+</div>
